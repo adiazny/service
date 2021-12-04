@@ -33,7 +33,7 @@ KIND_CLUSTER := diaz-starter-cluster
 
 # Upgrade to latest Kind (>=v0.11): e.g. brew upgrade kind
 # For full Kind v0.11 release notes: https://github.com/kubernetes-sigs/kind/releases/tag/v0.11.0
-# Kind release used for our project: https://github.com/kubernetes-sigs/kind/releases/tag/v0.11.1
+# Kind release used for our project: https://github.co	m/kubernetes-sigs/kind/releases/tag/v0.11.1
 # The image used below was copied by the above link and supports both amd64 and arm64.
 
 kind-up:
