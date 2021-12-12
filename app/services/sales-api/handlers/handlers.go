@@ -9,7 +9,7 @@ import (
 
 	"github.com/adiazny/service/app/services/sales-api/handlers/debug/checkgrp"
 	"github.com/adiazny/service/app/services/sales-api/handlers/v1/testgrp"
-	"github.com/dimfeld/httptreemux/v5"
+	"github.com/adiazny/service/foundations/web"
 	"go.uber.org/zap"
 )
 
@@ -38,16 +38,15 @@ type APIMuxConfig struct {
 }
 
 // APIMux constructs a http.Handler with all application routes defined.
-func APIMux(cfg APIMuxConfig) *httptreemux.ContextMux {
-	mux := httptreemux.NewContextMux()
+func APIMux(cfg APIMuxConfig) *web.App {
 
-	tgh := testgrp.Handlers{
-		Log: cfg.Log,
-	}
+	// Construct the web.App which holds all routes.
+	app := web.NewApp(cfg.Shutdown)
 
-	mux.Handle(http.MethodGet, "/v1/test", tgh.Test)
+	// Load the v1 routes.
+	v1(app, cfg)
 
-	return mux
+	return app
 }
 
 // DebugMux registers all the debug standard library routes and then custom
@@ -66,4 +65,16 @@ func DebugMux(build string, log *zap.SugaredLogger) http.Handler {
 	mux.HandleFunc("/debug/liveness", cgh.Liveness)
 
 	return mux
+}
+
+// v1 binds all the version 1 routes
+func v1(app *web.App, cfg APIMuxConfig) {
+	const version = "v1"
+
+	tgh := testgrp.Handlers{
+		Log: cfg.Log,
+	}
+
+	app.Handle(http.MethodGet, version, "/test", tgh.Test)
+
 }
